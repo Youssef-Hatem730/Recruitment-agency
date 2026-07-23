@@ -18,17 +18,12 @@ with open("jobs.json", "r", encoding="utf-8") as file:
 
 # Search Job
 def search_job():
-
     keyword = input("\nEnter Job Title: ").lower()
-
     found = False
 
     for job in JOBS_DB:
-
         if keyword in job["Title"].lower() or keyword in job["Description"].lower():
-
             found = True
-
             print("\n========== Matching Job==========")
             print("Title       :", job["Title"])
             print("Description :", job["Description"])
@@ -42,7 +37,6 @@ def search_job():
 
 # Extract text from file with extention(pdf,docx,txt)
 def extract_text(filename, content):
-
     extension = filename.split(".")[-1].lower()
 
     if extension not in ["pdf", "docx", "txt"]:
@@ -72,16 +66,12 @@ def extract_text(filename, content):
 def match_cv():
 
     print("\nUpload your CV (pdf / docx / txt)")
-
     uploaded = files.upload()
-
     if not uploaded:
         return
 
     filename = list(uploaded.keys())[0]
-
-    cv_text = extract_text(filename, uploaded[filename])
-
+    cv_text = extract_text(filename, uploaded[filename])\
     if cv_text is None:
         return
 
@@ -129,45 +119,32 @@ def match_cv():
     response_text = response_text.replace("```json", "").replace("```", "").strip()
 
     try:
-
         result = json.loads(response_text)
-
         selected_job = result["job"]
-
         if selected_job in jobs:
-
             print("\n========== Recommended Job ==========\n")
-
             print("Job    :", selected_job)
             print("Reason :", result["reason"])
             print()
 
             for job in JOBS_DB:
-
                 if job["Title"] == selected_job:
-
                     print("Description :", job["Description"])
                     print("Location    :", job["Place"])
                     print("Salary      :", job["Salary"])
                     print("Apply Link  :", job["Apply_link"])
                     break
-
         else:
-
             print("The model returned an unsupported job.")
-
     except Exception as e:
         print("Error:", e)
 
 # Deterministic Router
 from google import genai
-
 client = genai.Client(api_key=api_key)
 
 def main():
-
     while True:
-
         print("\n===================================")
         print("       Recruitment Agency")
         print("===================================")
@@ -178,23 +155,13 @@ def main():
         choice = input("\nChoose an option: ")
 
         if choice == "1":
-
             search_job()
-
         elif choice == "2":
-
             match_cv()
-
         elif choice == "3":
-
             print("\nWishing you success in your career journey!")
             break
-
         else:
-
             print("\nInvalid choice. Try again.")
-
-
 if __name__ == "__main__":
     main()
-
