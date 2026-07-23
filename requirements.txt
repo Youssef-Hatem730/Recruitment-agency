@@ -5,3 +5,6 @@ pydantic
 langchain-google-genai
 langgraph
 duckduckgo-search
+google-genai
+PyPDF2
+python-docx
