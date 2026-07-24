@@ -2,6 +2,7 @@ import os
 import json
 import fitz
 from docx import Document
+from tkinter import Tk, filedialog
 
 
 # File Readers
@@ -32,18 +33,67 @@ def read_cv(file_path):
 
     if extension == ".pdf":
         return read_pdf(file_path)
+
     elif extension == ".docx":
         return read_docx(file_path)
+
     elif extension == ".txt":
         return read_txt(file_path)
+
     else:
         raise ValueError("Unsupported file type")
 
 
+# File Picker
+def choose_cv():
+    root = Tk()
+    root.withdraw()
+
+    file_path = filedialog.askopenfilename(
+
+        title="Select your CV",
+
+        filetypes=[
+            ("PDF files", "*.pdf"),
+            ("Word files", "*.docx"),
+            ("Text files", "*.txt")
+        ]
+    )
+    return file_path
+
+
+# Load Jobs
 def load_jobs(json_file):
     with open(json_file, "r", encoding="utf-8") as file:
         jobs = json.load(file)
     return jobs
+
+
+# Search Job
+def search_job():
+    keyword = input("\nEnter Job Title: ").lower()
+
+    jobs = load_jobs("jobs.json")
+
+    found = False
+
+    for job in jobs:
+
+        if keyword in job["Title"].lower() or keyword in job["Description"].lower():
+
+            found = True
+
+            print("\n========== Matching Job ==========")
+            print("Title       :", job["Title"])
+            print("Description :", job["Description"])
+            print("Location    :", job["Place"])
+            print("Salary      :", job["Salary"])
+            print("Apply Link  :", job["Apply_link"])
+            print("==================================")
+
+    if not found:
+
+        print("\nNo matching jobs found.")
 
 
 # HARD-CODED TECHNICAL KEYWORDS
@@ -101,48 +151,56 @@ TECH_KEYWORDS = [
     "tableau"
 ]
 
-# EXTRACT CANDIDATE KEYWORDS
+
+# Extract Candidate Keywords
 def extract_keywords(cv_text):
     cv_text = cv_text.lower()
+
     candidate_keywords = []
+
     for keyword in TECH_KEYWORDS:
+
         if keyword in cv_text:
+
             candidate_keywords.append(keyword)
     return candidate_keywords
 
 
 MIN_MATCHES = 3
 
+# Find Matching Job
 def find_matching_job(candidate_keywords, jobs):
 
     for job in jobs:
+
         description = job.get("Description", "").lower()
+
         matched_keywords = []
 
-        #Comparimg candidate skills with job description
         for keyword in candidate_keywords:
+
             if keyword in description:
                 matched_keywords.append(keyword)
 
-        # Hard-coded condition
         if len(matched_keywords) >= MIN_MATCHES:
-            print("Matched Skills:", matched_keywords)
-            return job
+            return job, matched_keywords
 
-    return None
+    return None, []
 
 
-# OUTPUT JSON
+# Build Output JSON
 def build_output(selected_job):
 
     if selected_job is None:
 
         return {
+
             "job_title": "No suitable job found",
             "job_description": "",
             "job_salary": "",
             "url": ""
         }
+
     return {
 
         "job_title": selected_job.get("Title", ""),
@@ -152,59 +210,100 @@ def build_output(selected_job):
     }
 
 
+# Save Result
 def save_result(result):
-
     with open("result.json", "w", encoding="utf-8") as file:
         json.dump(result, file, indent=4, ensure_ascii=False)
 
+# Match CV
+def match_cv():
+    cv_path = choose_cv()
 
-
-def main():
-
-    print("Reactive Recruitment Agent")
- 
-    cv_path = input("Enter CV file path: ")
-
+    if not cv_path:
+        return
+    
     try:
         cv_text = read_cv(cv_path)
     except Exception as e:
+
         print("\nError reading CV:")
         print(e)
         return
 
     candidate_keywords = extract_keywords(cv_text)
-    print("Candidate Skills:")
+
+    print("\nCandidate Skills:")
     print(candidate_keywords)
 
     if len(candidate_keywords) == 0:
-        print("\nNo technical skills were found.")
+
         result = {
+
             "job_title": "No suitable job found",
             "job_description": "",
             "job_salary": "",
             "url": ""
         }
-        save_result(result)
-        return
 
+        save_result(result)
+
+        print("\nNo suitable job found.")
+        return
+    
     try:
+
         jobs = load_jobs("jobs.json")
     except Exception as e:
+
         print("\nError loading jobs.json")
         print(e)
         return
 
+    selected_job, matched_keywords = find_matching_job(candidate_keywords, jobs)
 
-    selected_job = find_matching_job(candidate_keywords, jobs)
+    print("\nMatched Skills:")
+    print(matched_keywords)
+
     result = build_output(selected_job)
-    save_result(result)
-    print("\nRecommended Job")
-    print("-" * 20)
 
-    print("Title :", result["job_title"])
+    save_result(result)
+
+    print("\n========== Recommended Job ==========\n")
+    print("Title       :", result["job_title"])
     print("Description :", result["job_description"])
-    print("Salary :", result["job_salary"])
-    print("URL :", result["url"])
+    print("Salary      :", result["job_salary"])
+    print("URL         :", result["url"])
+
+# Main
+def main():
+
+    while True:
+        print("\n===================================")
+        print("       Recruitment Agency")
+        print("===================================")
+        print("1. Search for a Job")
+        print("2. Match My CV")
+        print("3. Exit")
+
+        choice = input("\nChoose an option: ")
+
+        if choice == "1":
+
+            search_job()
+
+        elif choice == "2":
+
+            match_cv()
+
+        elif choice == "3":
+
+            print("\nWishing you success in your career journey!")
+
+            break
+
+        else:
+
+            print("\nInvalid choice. Try again.")
 
 
 if __name__ == "__main__":
