@@ -98,7 +98,12 @@ def match_cv():
         print("Could not extract text from the uploaded file.")
         return
 
-    jobs = [job["Title"] for job in JOBS_DB]
+    job_titles = [job["Title"] for job in JOBS_DB]
+
+    jobs = [
+        f"{job['Title']}: {job['Description']}"
+        for job in JOBS_DB
+    ]
 
     prompt = f"""
     You are a deterministic routing agent for a recruitment company.
@@ -111,11 +116,10 @@ def match_cv():
 
     Rules:
 
-    1. Choose exactly ONE job from the list above.
-    2. Never invent a new job title.
-    3. Do not recommend multiple jobs.
-    4. Return ONLY valid JSON.
-    5. Do not use markdown.
+    1. Never invent a new job title.
+    2. Do not recommend multiple jobs.
+    3. Return ONLY valid JSON.
+    4. Do not use markdown.
 
     Format:
 
@@ -127,6 +131,16 @@ def match_cv():
     Candidate CV:
 
     {cv_text}
+    Choose exactly ONE job only if the candidate's skills and experience clearly match the job requirements.
+
+    If there is no strong match, return:
+
+    {{
+    "job": "None",
+    "reason": "No suitable job found."
+    }}
+
+    Do not choose the closest job. Do not force a match.    
     """
 
     response = client.models.generate_content(
@@ -142,8 +156,10 @@ def match_cv():
         result = json.loads(response_text)
 
         selected_job = result["job"]
-
-        if selected_job in jobs:
+        if selected_job == "None":
+            print("No suitable job found.")
+            return
+        if selected_job in job_titles:
 
             print("\n========== Recommended Job ==========\n")
 
