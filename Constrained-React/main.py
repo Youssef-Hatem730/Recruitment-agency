@@ -3,11 +3,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.errors import GraphRecursionError
 from langchain.agents import create_agent
 from pydantic import BaseModel,Field
-from tools import match_cv,Search_Jobs
+import tools
 from dotenv import load_dotenv
-from langchain_core.tools import tool
-import json
-from langchain_core.utils.json import parse_json_markdown
 
 load_dotenv()
 
@@ -24,23 +21,23 @@ class ResultsList(BaseModel):
 
 LLM= ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite")
 
-system_prompt=("you are a job recruiter agent answer user request carefully using provided tools"
+system_prompt=("you are a job recruiter agent look for jobs in known sites"
                 "Your final response MUST fully populate the required structured JSON format dont include any other texts."
                 )
 
 memory=MemorySaver()
 
-tools=[match_cv,Search_Jobs]
+tool=[tools.match_cv,tools.Search_Jobs]
 
 agent=create_agent(
     model=LLM,
     checkpointer=memory,
-    tools=tools,
+    tools=tool,
     system_prompt=system_prompt,
     response_format= ResultsList
 )
 config = {"configurable": {"thread_id": "user_session_abc123"},
-        
+        "recursion_limit": 3,
         "response_mime_type":"application/json",
         "response_schema":ResultsList
           }

@@ -42,7 +42,6 @@ def extract_text(filename, content):
 
     return text.lower()
 
-@tool
 def match_cv():
 
 
@@ -135,7 +134,6 @@ def match_cv():
 
     return response_text
 
-@tool
 def Search_Jobs(query: str) -> str:
     """Searches for avaialbe jobs ."""
     results = []
