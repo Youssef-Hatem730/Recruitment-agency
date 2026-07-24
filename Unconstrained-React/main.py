@@ -29,9 +29,5 @@ while(True):
     
     raw=response["messages"][-1].content
 
-    raw_text=raw[0].get("text","")
-    full_data = parse_json_markdown(raw_text)
-        
-    results_only = full_data.get("Results", [])
-    print(results_only)
+    print(raw)
 
