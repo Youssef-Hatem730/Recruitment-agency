@@ -25,3 +25,12 @@ This project demonstrates these different decision-making approaches through fou
 - Routing Agent
 - Unconstrained ReAct Agent
 - Constrained ReAct Agent
+
+## Comparison Table
+
+| Agent | Calls per Request | Rough Cost / Token Usage | Latency | Failure on Tricky or Unseen Input |
+|--------|-------------------|--------------------------|---------|-----------------------------------|
+| Reactive | 0 LLM calls | Free (No token usage) | Very Fast | Cannot infer new skills or understand synonyms. It only matches predefined keywords and rules, so unseen skills or descriptions may result in no suitable job recommendation. |
+| Unconstrained ReAct | TBD | TBD | TBD | TBD |
+| Routing | TBD | TBD | TBD | TBD |
+| Constrained ReAct | TBD | TBD | TBD | TBD |
