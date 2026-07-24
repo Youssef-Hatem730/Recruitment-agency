@@ -12,7 +12,7 @@ import json
 
 dotenv.load_dotenv()
 client = genai.Client()
-with open("Constrained-React\\jobs.json", "r", encoding="utf-8") as file:
+with open("jobs.json", "r", encoding="utf-8") as file:
     JOBS_DB = json.load(file)
 
 def extract_text(filename, content):
