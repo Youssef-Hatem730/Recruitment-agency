@@ -31,6 +31,6 @@ This project demonstrates these different decision-making approaches through fou
 | Agent | Calls per Request | Rough Cost / Token Usage | Latency | Failure on Tricky or Unseen Input |
 |--------|-------------------|--------------------------|---------|-----------------------------------|
 | Reactive | 0 LLM calls | Free (No token usage) | Very Fast | Cannot infer new skills or understand synonyms. It only matches predefined keywords and rules, so unseen skills or descriptions may result in no suitable job recommendation. |
-| Unconstrained ReAct | TBD | TBD | TBD | TBD |
+| Unconstrained ReAct | 1 LLM | 5 Request per minute | fast (max 10 sec delay) | no cv rating |
 | Routing | 1 LLM call  | Low (1 Gemini API call) | Fast | If the CV does not closely match any job in the predefined database, the model may return "No suitable job found" (or choose an incorrect job if the prompt is not strict enough). It cannot recommend jobs outside the predefined jobs.json list |
-| Constrained ReAct | TBD | TBD | TBD | TBD |
+| Constrained ReAct | 2-3 LLM call | 5 Request per miniute | fast  | can call itself multiple times |
