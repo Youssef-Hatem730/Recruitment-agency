@@ -32,5 +32,5 @@ This project demonstrates these different decision-making approaches through fou
 |--------|-------------------|--------------------------|---------|-----------------------------------|
 | Reactive | 0 LLM calls | Free (No token usage) | Very Fast | Cannot infer new skills or understand synonyms. It only matches predefined keywords and rules, so unseen skills or descriptions may result in no suitable job recommendation. |
 | Unconstrained ReAct | TBD | TBD | TBD | TBD |
-| Routing | TBD | TBD | TBD | TBD |
+| Routing | 1 LLM call  | Low (1 Gemini API call) | Fast | If the CV does not closely match any job in the predefined database, the model may return "No suitable job found" (or choose an incorrect job if the prompt is not strict enough). It cannot recommend jobs outside the predefined jobs.json list |
 | Constrained ReAct | TBD | TBD | TBD | TBD |
