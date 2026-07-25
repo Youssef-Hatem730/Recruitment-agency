@@ -132,13 +132,6 @@ def match_cv():
     {cv_text}
     Choose exactly ONE job only if the candidate's skills and experience clearly match the job requirements.
 
-    If there is no strong match, return:
-
-    {{
-    "job": "None",
-    "reason": "No suitable job found."
-    }}
-
     Do not choose the closest job. Do not force a match.    
     """
 
