@@ -285,13 +285,13 @@ def main():
         print("2. Match My CV")
         print("3. Exit")
 
-        choice = input("\nChoose an option: ")
+        choice = input("\nUser: ")
 
-        if choice == "1":
+        if choice == "1" or choice.lower().find("jobs","job")!=-1:
 
             search_job()
 
-        elif choice == "2":
+        elif choice == "2" or choice.lower().find("cv")!=-1:
 
             match_cv()
 
