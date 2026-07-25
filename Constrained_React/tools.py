@@ -36,7 +36,7 @@ def extract_text(filename, content):
                 text += page.extract_text()
 
     elif extension == "docx":
-        document = docx.Document(io.BytesIO(content))
+        document = docx.Document((content))
         for paragraph in document.paragraphs:
             text += paragraph.text + "\n"
 
