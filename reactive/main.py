@@ -287,7 +287,7 @@ def main():
 
         choice = input("\nUser: ")
 
-        if choice == "1" or choice.lower().find("jobs","job")!=-1:
+        if choice == "1" or choice.lower().find("jobs")!=-1:
 
             search_job()
 
