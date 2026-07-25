@@ -68,11 +68,9 @@ def match_cv():
     prompt = f"""
     You are a deterministic routing agent for a recruitment company.
 
-    Your task is to classify the candidate into ONE AND ONLY ONE job.
+    Your task is to classify the candidate into ONE AND ONLY ONE job search in internet for available jobs.
 
-    Available jobs:
 
-    {chr(10).join(jobs)}
 
     Rules:
 
@@ -82,18 +80,17 @@ def match_cv():
     4. Return ONLY valid JSON.
     5. Do not use markdown.
 
-    Format:
+   Format:
 
     {{
-        "job":"Backend Developer",
-        "reason":"Python, Django, SQL"
+        "job":"Your answer",
+        "reason":"your answer"
     }}
 
     Candidate CV:
 
     {cv_text}
     """
-    
     response = client.models.generate_content(
             model="gemini-3.6-flash",
             contents=prompt
@@ -101,38 +98,9 @@ def match_cv():
 
     response_text = response.text.strip()
     response_text = response_text.replace("```json", "").replace("```", "").strip()
+    print(response_text)
 
-    try:
-
-        result = json.loads(response_text)
-
-        selected_job = result["job"]
-
-        if selected_job in jobs:
-
-            print("\n========== Recommended Job ==========\n")
-
-            print("Job    :", selected_job)
-            print("Reason :", result["reason"])
-            print()
-
-            for job in JOBS_DB:
-
-                if job["Title"] == selected_job:
-
-                    print("Description :", job["Description"])
-                    print("Location    :", job["Place"])
-                    print("Salary      :", job["Salary"])
-                    print("Apply Link  :", job["Apply_link"])
-                    break
-
-        else:
-
-            print("The model returned an unsupported job.")
-
-    except Exception as e:
-        print("Error:", e)
-
+ 
     return response_text
 
 @tool
