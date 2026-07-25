@@ -10,7 +10,7 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 
 # Jobs
-with open("jobs.json", "r", encoding="utf-8") as file:
+with open("routing\\jobs.json", "r", encoding="utf-8") as file:
     JOBS_DB = json.load(file)
 
 # Search Job
@@ -188,6 +188,31 @@ from google import genai
 
 client = genai.Client(api_key=api_key)
 
+
+
+def Classify_Choice(choice):
+    prompt = f"""
+        Classify this messege to one of the following
+        job or cv
+        messege: {choice}
+    
+        Format:
+        "Your answer only",
+               
+        Choose exactly ONE category 
+      
+      
+        """
+    
+    response = client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=prompt
+            )
+    
+    response_text = response.text.strip()
+    response_text = response_text.replace("```json", "").replace("```", "").strip()
+    return response_text
+
 def main():
 
     while True:
@@ -200,23 +225,20 @@ def main():
         print("3. Exit")
 
         choice = input("\nChoose an option: ")
+        classify=Classify_Choice(choice)
 
-        if choice == "1":
+        if classify == "job":
 
             search_job()
 
-        elif choice == "2":
+        elif classify == "cv":
 
             match_cv()
 
-        elif choice == "3":
+        else:
 
             print("\nWishing you success in your career journey!")
             break
-
-        else:
-
-            print("\nInvalid choice. Try again.")
 
 
 if __name__ == "__main__":
